@@ -20,11 +20,11 @@ class InvoiceAddress(BaseModel):
         phone: Phone number, e.g. +1-123-456-7890
     """
 
+    Attention: Optional[str] = Field(description="Name, e.g. John Doe")
     street: Optional[str] = Field(description="Street address, e.g. 123 Main St.")
     city: Optional[str] = Field(description="City, e.g. New York")
     state: Optional[str] = Field(description="State, e.g. NY")
     postal_code: Optional[str] = Field(description="Postal code, e.g. 10001")
-    country: Optional[str] = Field(description="Country, e.g. USA.")
     phone: Optional[str] = Field(description="Phone number, e.g. +1-123-456-7890.")
 
     @staticmethod
@@ -36,7 +36,7 @@ class InvoiceAddress(BaseModel):
             InvoiceAddress: An empty InvoiceAddress object.
         """
 
-        return InvoiceAddress(street="", city="", state="", postal_code="", country="")
+        return InvoiceAddress(street="", city="", state="", postal_code="", Attention="")
 
     def to_dict(self):
         """
@@ -51,24 +51,24 @@ class InvoiceAddress(BaseModel):
             "city": self.city,
             "state": self.state,
             "postal_code": self.postal_code,
-            "country": self.country,
+            "attention": self.Attention,
             "phone": self.phone,
         }
 
 
 class InvoiceSignature(BaseModel):
     """
-    A class representing a signature for an invoice.
+    A class representing a signature for the subcontractor.
 
     Attributes:
-        signatory: Name of the person who signed the invoice.
-        is_signed: Indicates if the invoice is signed.
+        signatory: Name of the person from the subcontractor who signed the contract.
+        is_signed: Indicates if the contract is signed.
     """
 
     signatory: Optional[str] = Field(
-        description="Name of the person who signed the invoice"
+        description="Name of the person who signed the contract"
     )
-    is_signed: Optional[bool] = Field(description="Indicates if the invoice is signed")
+    is_signed: Optional[bool] = Field(description="Indicates if the contract is signed by the subcontractor")
 
     @staticmethod
     def example():
@@ -94,42 +94,42 @@ class InvoiceSignature(BaseModel):
 
 class InvoiceItem(BaseModel):
     """
-    A class representing a line item in an invoice.
+    A class representing a details of the contract.
 
     Attributes:
-        product_code: Product code, product number, or SKU associated with the line item.
-        description: Description of the line item.
-        quantity: Quantity of the line item.
-        tax: Tax amount applied to the line item.
-        tax_rate: Tax rate applied to the line item.
-        unit_price: Net or gross price of one unit of the line item.
-        total: The total charges associated with the line item.
-        reason: Reason for returning the line item.
+        subcontractor: name of the company listed as subcontractor.
+        subcontract: category assigned to the scope of the project.
+        project: name assigned to the project.
+        project_num: full project number as listed in the contract.
+        project_num_prefix: portion of project number before '-', not including the '-'.
+        project_num_Suffix: portion of project number after '-', not including the '-'.
+        architect: architect named in the contract.
+        total_contract_value: value of contract in dollars and cents.
     """
 
-    product_code: Optional[str] = Field(
-        description="Product code, product number, or SKU associated with the line item, e.g. 12345",
+    subcontractor: Optional[str] = Field(
+        description="name of the company listed as subcontractor, e.g. Iron Woman Construction & Environmental Services LLC",
     )
-    description: Optional[str] = Field(
-        description="Description of the line item, e.g. Product A",
+    subcontract: Optional[str] = Field(
+        description="category assigned to the scope of the project, e.g.  Site Utilities",
     )
-    quantity: Optional[int] = Field(
-        description="Quantity of the line item",
+    project: Optional[str] = Field(
+        description="name assigned to the project, e.g. Pena Station Filing 2 and DIBC Filing 7 Phase 2",
     )
-    tax: Optional[float] = Field(
-        description="Tax amount applied to the line item, e.g. 6.00",
+    project_num: Optional[str] = Field(
+        description="full project number as listed in the contract, e.g. 3019221 - 0250000",
     )
-    tax_rate: Optional[str] = Field(
-        description="Tax rate applied to the line item, e.g. 18%",
+    project_num_prefix: Optional[str] = Field(
+        description="portion of project number before '-', not including the '-', e.g. 3019221",
     )
-    unit_price: Optional[float] = Field(
-        description="Net or gross price of one unit of the line item, e.g. 10.00",
+    project_num_Suffix: Optional[str] = Field(
+        description="portion of project number after '-', not including the '-', e.g. 0250000",
     )
-    total: Optional[float] = Field(
-        description="The total charges associated with the line item, e.g. 100.00",
+    architect: Optional[str] = Field(
+        description="architect named in the contract.",
     )
-    reason: Optional[str] = Field(
-        description="Reason for returning the line item, e.g. Damaged",
+    total_contract_value: Optional[str] = Field(
+        description="value of contract in dollars., e.g. $ 7,515,472",
     )
 
     @staticmethod
@@ -141,14 +141,14 @@ class InvoiceItem(BaseModel):
             InvoiceItem: An empty InvoiceItem object.
         """
         return InvoiceItem(
-            product_code="",
-            description="",
-            quantity=0.0,
-            tax=0.0,
-            tax_rate="",
-            unit_price=0.0,
-            total=0.0,
-            reason="",
+            subcontractor="",
+            subcontract="",
+            project="",
+            project_num="",
+            project_num_prefix="",
+            project_num_Suffix="",
+            architect="",
+            total_contract_value="",
         )
 
     def to_dict(self):
@@ -160,16 +160,14 @@ class InvoiceItem(BaseModel):
         """
 
         return {
-            "product_code": self.product_code,
-            "description": self.description,
-            "quantity": self.quantity,
-            "tax": f"{self.tax:.2f}" if self.tax is not None else None,
-            "tax_rate": self.tax_rate,
-            "unit_price": f"{self.unit_price:.2f}"
-            if self.unit_price is not None
-            else None,
-            "total": f"{self.total:.2f}" if self.total is not None else None,
-            "reason": self.reason,
+            "subcontractor": self.subcontractor,
+            "subcontract": self.subcontract,
+            "project": self.project,
+            "project_num": self.project_num,
+            "project_num_prefix": self.project_num_prefix,
+            "project_num_Suffix": self.project_num_Suffix,
+            "architect": self.architect,
+            "total_contract_value": self.total_contract_value,
         }
 
 
